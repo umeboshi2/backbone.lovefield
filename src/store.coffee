@@ -5,8 +5,6 @@ export class LoveStore
     return
   _getTable: ->
     return @conn.getSchema().table(@name)
-  save: ->
-    console.warn "lovefield save NOT IMPLEMENTED"
   create: (model) ->
     table = @_getTable()
     if not model.id and model.id isnt 0
@@ -23,15 +21,18 @@ export class LoveStore
       q = q.set(table[key], data[key])
     q = q.where(table.id.eq(data.id))
     return q.exec()
-  find: (model) ->
+  find: (model, options) ->
     table = @_getTable()
-    q = @conn.select().from(table).where(table.id.eq(model.id))
-    .exec()
+    return q = @conn.select().from(table).where(table.id.eq(model.id))
+    .exec().then (results) ->
+      model.set results[0]
+      return model
     return q
-  findAll: ->
+  findAll: (collection, options) ->
     table = @_getTable()
-    return @conn.select().from(table).exec()
-  destroy: (model) ->
+    return @conn.select().from(table).exec().then (results) ->
+      return collection.set results
+  destroy: (model, options) ->
     table = @_getTable()
     return @conn.delete().from(table).where(table.id.eq(model.id)).exec()
     
