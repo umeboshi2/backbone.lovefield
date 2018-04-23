@@ -2,9 +2,16 @@
   "name": "backbone.lovefield",
   "version": "0.1.0",
   "description": "lovefield backend for backbone",
-  "main": "index.js",
+  "main": "build/backbone.lovefield.js",
+  "files": [
+    "build",
+    "src"
+  ],
   "scripts": {
     "build": "webpack",
+    "compile": "NODE_ENV=production webpack",
+    "package": "rm -fr build && npm run build && npm run compile",
+    "prepublish": "npm run package",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -27,6 +34,7 @@
     "coffeescript": "^2.2.4",
     "jquery": "^3.3.1",
     "lovefield": "^2.1.12",
+    "uglifyjs-webpack-plugin": "^1.2.5",
     "underscore": "^1.9.0",
     "webpack": "^4.6.0",
     "webpack-cli": "^2.0.15"

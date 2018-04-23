@@ -48,10 +48,7 @@ extraPlugins = []
 WebPackOptimization = {}
 
 if BuildEnvironment is 'production'
-  CleanPlugin = require 'clean-webpack-plugin'
   UglifyJsPlugin = require 'uglifyjs-webpack-plugin'
-  OptimizeCssAssetsPlugin = require 'optimize-css-assets-webpack-plugin'
-  extraPlugins.push new CleanPlugin(localBuildDir[BuildEnvironment])
   WebPackOptimization.minimizer = [
     new UglifyJsPlugin()
     ]
