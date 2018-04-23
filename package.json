@@ -10,7 +10,7 @@
   "scripts": {
     "build": "webpack",
     "compile": "NODE_ENV=production webpack",
-    "package": "rm -fr build && npm run build && npm run compile",
+    "package": "rm -fr build && npm run build && npm run compile && git add build",
     "postversion": "git push && git push --tags",
     "prepublish": "npm run package",
     "test": "echo \"Error: no test specified\" && exit 1"
