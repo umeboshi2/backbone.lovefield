@@ -1,7 +1,10 @@
 import Backbone from 'backbone'
+
 import {sync as localSync } from './sync'
 import { LoveStore } from './store'
+import { getLoveStore } from './utils'
 
+Backbone.LoveStore = LoveStore
 ajaxSync = Backbone.sync
 
 ###* Get the local or ajax sync call
@@ -11,8 +14,10 @@ ajaxSync = Backbone.sync
 ###
 getSyncMethod = (model, options={}) ->
   forceAjaxSync = options.ajaxSync
-  return ajaxSync
-
+  hasLoveStore = getLoveStore(model)
+  return if not forceAjaxSync and hasLoveStore then localSync else ajaxSync
+  
 Backbone.sync = (method, model, options) ->
   return getSyncMethod(model, options).apply(@, [method, model, options])
 
+export { LoveStore }

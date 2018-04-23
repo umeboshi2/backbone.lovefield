@@ -1,7 +1,6 @@
 import Bb from 'backbone'
 import { isUndefined, result } from 'underscore'
-
-
+import { getLoveStore } from './utils'
 ###* Get the Deferred status from $ if we have jQuery, otherwise use Backbone's
 #  @returns {boolean} - Whether the request was deferred
 ###
@@ -19,21 +18,20 @@ getDeferred = ->
 #  `jQuery.ajax`
 # @returns {undefined}
 ###
-sync = (method, model, options={}) ->
-  # FIXME use localforage store
-  store = getLocalStorage model
-  syncDfd = getDeferred()
+export sync = (method, model, options={}) ->
+  store = getLoveStore model
   resp = undefined
+  syncDfd = getDeferred()
   try
     switch (method)
       when 'read'
-        resp = if model.id then self.find(model, options) else self.findAll(model, options) #noqa
+        resp = if model.id then store.find(model, options) else store.findAll(model, options) #noqa
       when 'create'
-        resp = self.create(model, options)
+        resp = store.create(model, options)
       when 'patch', 'update'
-        resp = self.update(model, options)
+        resp = store.update(model, options)
       when 'delete'
-        resp = self.destroy(model, options)
+        resp = store.destroy(model, options)
   catch error
     if error.code == 22
       errorMessage = 'Private browsing is unsupported'
@@ -45,15 +43,15 @@ sync = (method, model, options={}) ->
     if syncDfd
       syncDfd.resolve resp
   else
-    errorMessage = if errorMessage then errorMessage else 'Record Not Found'
+    errorMessage = if errorMessage then errorMessage else "Record Not Found"
     if options.error
       options.error.call model, errorMessage, options
     if syncDfd
       syncDfd.reject errorMessage
+
   # add compatibility with $.ajax
   # always execute callback for success and error
   if options.complete
     options.complete.call model, resp
+
   return syncDfd and syncDfd.promise()
-
-

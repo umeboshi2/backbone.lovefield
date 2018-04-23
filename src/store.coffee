@@ -1,3 +1,4 @@
+import { guid } from './utils'
 
 export class LoveStore
   constructor: (@conn, @name='') ->
@@ -5,24 +6,32 @@ export class LoveStore
   save: ->
     console.warn "lovefield save NOT IMPLEMENTED"
   create: (model) ->
-    console.log "lovefield create"
     table = @conn.getSchema().table(@name)
-    row = table.createRow model.toJSON()
-    return @conn.insert().into(table).values([row])
+    if not model.id and model.id isnt 0
+      model.id = guid()
+      model.set(model.idAttribute, model.id)
+    data = model.toJSON()
+    row = table.createRow data
+    return @conn.insert().into(table).values([row]).exec()
   update: (model) ->
-    console.warn "lovefield update NOT IMPLEMENTED"
     table = @conn.getSchema().table(@name)
+    data = model.toJSON()
+    keys = Object.keys data
+    q = @conn.update(table)
+    keys.forEach (key) ->
+      q = q.set(table[key], data[key])
+    q = q.where(table.id.eq(data.id))
+    return q.exec()
   find: (model) ->
-    console.log "lovefield find"
     table = @conn.getSchema().table(@name)
     q = @conn.select().from(table).where(table.id.eq(model.id))
     .exec()
     return q
   findAll: ->
-    console.log "lovefield findAll"
     table = @conn.getSchema().table(@name)
     return @conn.select().from(table).exec()
   destroy: (model) ->
-    console.warn "lovefield destroy NOT IMPLEMENTED"
     table = @conn.getSchema().table(@name)
+    return @conn.delete().from(table).where(table.id.eq(model.id)).exec()
+    
     
