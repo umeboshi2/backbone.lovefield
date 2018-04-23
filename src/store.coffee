@@ -18,9 +18,8 @@ export class LoveStore
   update: (model) ->
     table = @_getTable()
     data = model.toJSON()
-    keys = Object.keys data
     q = @conn.update(table)
-    keys.forEach (key) ->
+    Object.keys(data).forEach (key) ->
       q = q.set(table[key], data[key])
     q = q.where(table.id.eq(data.id))
     return q.exec()

@@ -21,7 +21,6 @@ getDeferred = ->
 export sync = (method, model, options={}) ->
   store = getLoveStore model
   resp = undefined
-  syncDfd = getDeferred()
   try
     switch (method)
       when 'read'
@@ -37,21 +36,22 @@ export sync = (method, model, options={}) ->
       errorMessage = 'Private browsing is unsupported'
     else
       errorMessage = error.message
+
   if resp
+    # compatibility with $.ajax
+    resp.done = resp.then
+    resp.fail = resp.catch
     if options.success
       options.success.call model, resp, options
-    if syncDfd
-      syncDfd.resolve resp
   else
     errorMessage = if errorMessage then errorMessage else "Record Not Found"
     if options.error
       options.error.call model, errorMessage, options
-    if syncDfd
-      syncDfd.reject errorMessage
 
   # add compatibility with $.ajax
   # always execute callback for success and error
   if options.complete
     options.complete.call model, resp
 
-  return syncDfd and syncDfd.promise()
+  return resp
+  
