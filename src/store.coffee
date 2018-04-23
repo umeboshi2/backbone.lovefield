@@ -1,3 +1,4 @@
+import lf from 'lovefield'
 import { guid } from './utils'
 
 export class LoveStore
@@ -28,10 +29,25 @@ export class LoveStore
       model.set results[0]
       return model
     return q
-  findAll: (collection, options) ->
+  findAll: (model, options) ->
     table = @_getTable()
-    return @conn.select().from(table).exec().then (results) ->
-      return collection.set results
+    q = @conn.select().from(table)
+    if options.data
+      filters = []
+      Object.keys(options.data).forEach (key) ->
+        clause = table[key].eq(options.data[key])
+        filters.push clause
+      if filters.length > 1
+        q = q.where(lf.op.and(filters))
+      else
+        q = q.where(filters[0])
+    return q.exec().then (results) ->
+      if model instanceof Backbone.Collection
+        return model.set results
+      else
+        # FIXME throw error if more
+        # than one result for model
+        return model.set results[0]
   destroy: (model, options) ->
     table = @_getTable()
     return @conn.delete().from(table).where(table.id.eq(model.id)).exec()
