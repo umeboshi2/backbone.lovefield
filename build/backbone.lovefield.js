@@ -178,9 +178,13 @@ backbone__WEBPACK_IMPORTED_MODULE_0___default.a.sync = function(method, model, o
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "LoveStore", function() { return LoveStore; });
-/* harmony import */ var lovefield__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! lovefield */ "lovefield");
-/* harmony import */ var lovefield__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(lovefield__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./utils */ "./src/utils.coffee");
+/* harmony import */ var underscore__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! underscore */ "underscore");
+/* harmony import */ var underscore__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(underscore__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var lovefield__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! lovefield */ "lovefield");
+/* harmony import */ var lovefield__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(lovefield__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./utils */ "./src/utils.coffee");
+
+
 
 
 
@@ -197,10 +201,12 @@ var LoveStore = class LoveStore {
   }
 
   create(model) {
-    var data, row, table;
+    var data, id, idAttribute, row, table;
     table = this._getTable();
-    if (!model.id && model.id !== 0) {
-      model.id = Object(_utils__WEBPACK_IMPORTED_MODULE_1__["guid"])();
+    idAttribute = Object(underscore__WEBPACK_IMPORTED_MODULE_0__["result"])(model, 'idAttribute');
+    id = Object(underscore__WEBPACK_IMPORTED_MODULE_0__["result"])(model, idAttribute);
+    if (!id && id !== 0) {
+      model.id = Object(_utils__WEBPACK_IMPORTED_MODULE_2__["guid"])();
       model.set(model.idAttribute, model.id);
     }
     data = model.toJSON();
@@ -221,9 +227,11 @@ var LoveStore = class LoveStore {
   }
 
   find(model, options) {
-    var q, table;
+    var id, idAttribute, q, table;
     table = this._getTable();
-    return q = this.conn.select().from(table).where(table.id.eq(model.id)).exec().then(function(results) {
+    idAttribute = Object(underscore__WEBPACK_IMPORTED_MODULE_0__["result"])(model, 'idAttribute');
+    id = Object(underscore__WEBPACK_IMPORTED_MODULE_0__["result"])(model, idAttribute);
+    return q = this.conn.select().from(table).where(table.id.eq(id)).exec().then(function(results) {
       model.set(results[0]);
       return model;
     });
@@ -242,7 +250,7 @@ var LoveStore = class LoveStore {
         return filters.push(clause);
       });
       if (filters.length > 1) {
-        q = q.where(lovefield__WEBPACK_IMPORTED_MODULE_0___default.a.op.and(filters));
+        q = q.where(lovefield__WEBPACK_IMPORTED_MODULE_1___default.a.op.and(filters));
       } else {
         q = q.where(filters[0]);
       }
@@ -312,13 +320,15 @@ getDeferred = function() {
  * @returns {undefined}
  */
 var sync = function(method, model, options = {}) {
-  var error, errorMessage, resp, store;
+  var error, errorMessage, id, idAttribute, resp, store;
   store = Object(_utils__WEBPACK_IMPORTED_MODULE_2__["getLoveStore"])(model);
   resp = void 0;
   try {
     switch (method) {
       case 'read':
-        resp = model.id ? store.find(model, options) : store.findAll(model, options); //noqa
+        idAttribute = Object(underscore__WEBPACK_IMPORTED_MODULE_1__["result"])(model, 'idAttribute');
+        id = Object(underscore__WEBPACK_IMPORTED_MODULE_1__["result"])(model, idAttribute);
+        resp = id ? store.find(model, options) : store.findAll(model, options); //noqa
         break;
       case 'create':
         resp = store.create(model, options);
