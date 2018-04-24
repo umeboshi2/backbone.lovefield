@@ -24,7 +24,9 @@ export sync = (method, model, options={}) ->
   try
     switch (method)
       when 'read'
-        resp = if model.id then store.find(model, options) else store.findAll(model, options) #noqa
+        idAttribute = result(model, 'idAttribute')
+        id = result(model, idAttribute)
+        resp = if id then store.find(model, options) else store.findAll(model, options) #noqa
       when 'create'
         resp = store.create(model, options)
       when 'patch', 'update'

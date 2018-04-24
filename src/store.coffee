@@ -1,3 +1,4 @@
+import { result } from 'underscore'
 import lf from 'lovefield'
 import { guid } from './utils'
 
@@ -8,7 +9,9 @@ export class LoveStore
     return @conn.getSchema().table(@name)
   create: (model) ->
     table = @_getTable()
-    if not model.id and model.id isnt 0
+    idAttribute = result(model, 'idAttribute')
+    id = result(model, idAttribute)
+    if not id and id isnt 0
       model.id = guid()
       model.set(model.idAttribute, model.id)
     data = model.toJSON()
@@ -24,7 +27,9 @@ export class LoveStore
     return q.exec()
   find: (model, options) ->
     table = @_getTable()
-    return q = @conn.select().from(table).where(table.id.eq(model.id))
+    idAttribute = result(model, 'idAttribute')
+    id = result(model, idAttribute)
+    return q = @conn.select().from(table).where(table.id.eq(id))
     .exec().then (results) ->
       model.set results[0]
       return model
