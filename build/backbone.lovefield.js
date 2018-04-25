@@ -201,11 +201,9 @@ var LoveStore = class LoveStore {
   }
 
   create(model) {
-    var data, id, idAttribute, row, table;
+    var data, row, table;
     table = this._getTable();
-    idAttribute = Object(underscore__WEBPACK_IMPORTED_MODULE_0__["result"])(model, 'idAttribute');
-    id = Object(underscore__WEBPACK_IMPORTED_MODULE_0__["result"])(model, idAttribute);
-    if (!id && id !== 0) {
+    if (!model.id && model.id !== 0) {
       model.id = Object(_utils__WEBPACK_IMPORTED_MODULE_2__["guid"])();
       model.set(model.idAttribute, model.id);
     }

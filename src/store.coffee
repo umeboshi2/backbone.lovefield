@@ -9,9 +9,7 @@ export class LoveStore
     return @conn.getSchema().table(@name)
   create: (model) ->
     table = @_getTable()
-    idAttribute = result(model, 'idAttribute')
-    id = result(model, idAttribute)
-    if not id and id isnt 0
+    if not model.id and model.id isnt 0
       model.id = guid()
       model.set(model.idAttribute, model.id)
     data = model.toJSON()
