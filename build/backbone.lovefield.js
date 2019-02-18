@@ -46,17 +46,32 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// define getter function for harmony exports
 /******/ 	__webpack_require__.d = function(exports, name, getter) {
 /******/ 		if(!__webpack_require__.o(exports, name)) {
-/******/ 			Object.defineProperty(exports, name, {
-/******/ 				configurable: false,
-/******/ 				enumerable: true,
-/******/ 				get: getter
-/******/ 			});
+/******/ 			Object.defineProperty(exports, name, { enumerable: true, get: getter });
 /******/ 		}
 /******/ 	};
 /******/
 /******/ 	// define __esModule on exports
 /******/ 	__webpack_require__.r = function(exports) {
+/******/ 		if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 			Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 		}
 /******/ 		Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 	};
+/******/
+/******/ 	// create a fake namespace object
+/******/ 	// mode & 1: value is a module id, require it
+/******/ 	// mode & 2: merge all properties of value into the ns
+/******/ 	// mode & 4: return value when already ns object
+/******/ 	// mode & 8|1: behave like require
+/******/ 	__webpack_require__.t = function(value, mode) {
+/******/ 		if(mode & 1) value = __webpack_require__(value);
+/******/ 		if(mode & 8) return value;
+/******/ 		if((mode & 4) && typeof value === 'object' && value && value.__esModule) return value;
+/******/ 		var ns = Object.create(null);
+/******/ 		__webpack_require__.r(ns);
+/******/ 		Object.defineProperty(ns, 'default', { enumerable: true, value: value });
+/******/ 		if(mode & 2 && typeof value != 'string') for(var key in value) __webpack_require__.d(ns, key, function(key) { return value[key]; }.bind(null, key));
+/******/ 		return ns;
 /******/ 	};
 /******/
 /******/ 	// getDefaultExport function for compatibility with non-harmony modules
@@ -97,7 +112,7 @@ g = (function() {
 
 try {
 	// This works if eval is allowed (see CSP)
-	g = g || Function("return this")() || (1, eval)("this");
+	g = g || new Function("return this")();
 } catch (e) {
 	// This works if the window reference is available
 	if (typeof window === "object") g = window;
@@ -116,18 +131,28 @@ module.exports = g;
 /*!***************************!*\
   !*** ./src/driver.coffee ***!
   \***************************/
-/*! exports provided: LoveStore */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var backbone__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! backbone */ "backbone");
-/* harmony import */ var backbone__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(backbone__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _sync__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./sync */ "./src/sync.coffee");
-/* harmony import */ var _store__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./store */ "./src/store.coffee");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "LoveStore", function() { return _store__WEBPACK_IMPORTED_MODULE_2__["LoveStore"]; });
 
-/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./utils */ "./src/utils.coffee");
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.LoveStore = undefined;
+
+var _backbone = __webpack_require__(/*! backbone */ "backbone");
+
+var _backbone2 = _interopRequireDefault(_backbone);
+
+var _sync = __webpack_require__(/*! ./sync */ "./src/sync.coffee");
+
+var _store = __webpack_require__(/*! ./store */ "./src/store.coffee");
+
+var _utils = __webpack_require__(/*! ./utils */ "./src/utils.coffee");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /** Get the local or ajax sync call
  * @param {Model} model - Model to sync
@@ -136,35 +161,28 @@ __webpack_require__.r(__webpack_exports__);
  */
 var ajaxSync, getSyncMethod;
 
+_backbone2.default.LoveStore = _store.LoveStore;
 
+ajaxSync = _backbone2.default.sync;
 
+getSyncMethod = function getSyncMethod(model) {
+  var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
-
-
-
-
-
-backbone__WEBPACK_IMPORTED_MODULE_0___default.a.LoveStore = _store__WEBPACK_IMPORTED_MODULE_2__["LoveStore"];
-
-ajaxSync = backbone__WEBPACK_IMPORTED_MODULE_0___default.a.sync;
-
-getSyncMethod = function(model, options = {}) {
   var forceAjaxSync, hasLoveStore;
   forceAjaxSync = options.ajaxSync;
-  hasLoveStore = Object(_utils__WEBPACK_IMPORTED_MODULE_3__["getLoveStore"])(model);
+  hasLoveStore = (0, _utils.getLoveStore)(model);
   if (!forceAjaxSync && hasLoveStore) {
-    return _sync__WEBPACK_IMPORTED_MODULE_1__["sync"];
+    return _sync.sync;
   } else {
     return ajaxSync;
   }
 };
 
-backbone__WEBPACK_IMPORTED_MODULE_0___default.a.sync = function(method, model, options) {
+_backbone2.default.sync = function (method, model, options) {
   return getSyncMethod(model, options).apply(this, [method, model, options]);
 };
 
-
-
+exports.LoveStore = _store.LoveStore;
 
 /***/ }),
 
@@ -172,106 +190,126 @@ backbone__WEBPACK_IMPORTED_MODULE_0___default.a.sync = function(method, model, o
 /*!**************************!*\
   !*** ./src/store.coffee ***!
   \**************************/
-/*! exports provided: LoveStore */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "LoveStore", function() { return LoveStore; });
-/* harmony import */ var underscore__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! underscore */ "underscore");
-/* harmony import */ var underscore__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(underscore__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var lovefield__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! lovefield */ "lovefield");
-/* harmony import */ var lovefield__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(lovefield__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./utils */ "./src/utils.coffee");
 
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.LoveStore = undefined;
 
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _underscore = __webpack_require__(/*! underscore */ "underscore");
 
+var _lovefield = __webpack_require__(/*! lovefield */ "lovefield");
 
-var LoveStore = class LoveStore {
-  constructor(conn, name = '') {
+var _lovefield2 = _interopRequireDefault(_lovefield);
+
+var _utils = __webpack_require__(/*! ./utils */ "./src/utils.coffee");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var LoveStore = exports.LoveStore = function () {
+  function LoveStore(conn) {
+    var name = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
+
+    _classCallCheck(this, LoveStore);
+
     this.conn = conn;
     this.name = name;
     return;
   }
 
-  _getTable() {
-    return this.conn.getSchema().table(this.name);
-  }
-
-  create(model) {
-    var data, row, table;
-    table = this._getTable();
-    if (!model.id && model.id !== 0) {
-      model.id = Object(_utils__WEBPACK_IMPORTED_MODULE_2__["guid"])();
-      model.set(model.idAttribute, model.id);
+  _createClass(LoveStore, [{
+    key: '_getTable',
+    value: function _getTable() {
+      return this.conn.getSchema().table(this.name);
     }
-    data = model.toJSON();
-    row = table.createRow(data);
-    return this.conn.insert().into(table).values([row]).exec();
-  }
-
-  update(model) {
-    var data, q, table;
-    table = this._getTable();
-    data = model.toJSON();
-    q = this.conn.update(table);
-    Object.keys(data).forEach(function(key) {
-      return q = q.set(table[key], data[key]);
-    });
-    q = q.where(table.id.eq(data.id));
-    return q.exec();
-  }
-
-  find(model, options) {
-    var id, idAttribute, q, table;
-    table = this._getTable();
-    idAttribute = Object(underscore__WEBPACK_IMPORTED_MODULE_0__["result"])(model, 'idAttribute');
-    id = Object(underscore__WEBPACK_IMPORTED_MODULE_0__["result"])(model, idAttribute);
-    return q = this.conn.select().from(table).where(table.id.eq(id)).exec().then(function(results) {
-      model.set(results[0]);
-      return model;
-    });
-    return q;
-  }
-
-  findAll(model, options) {
-    var filters, q, table;
-    table = this._getTable();
-    q = this.conn.select().from(table);
-    if (options.data) {
-      filters = [];
-      Object.keys(options.data).forEach(function(key) {
-        var clause;
-        clause = table[key].eq(options.data[key]);
-        return filters.push(clause);
+  }, {
+    key: 'create',
+    value: function create(model) {
+      var data, row, table;
+      table = this._getTable();
+      if (!model.id && model.id !== 0) {
+        model.id = (0, _utils.guid)();
+        model.set(model.idAttribute, model.id);
+      }
+      data = model.toJSON();
+      row = table.createRow(data);
+      return this.conn.insert().into(table).values([row]).exec();
+    }
+  }, {
+    key: 'update',
+    value: function update(model) {
+      var data, q, table;
+      table = this._getTable();
+      data = model.toJSON();
+      q = this.conn.update(table);
+      Object.keys(data).forEach(function (key) {
+        return q = q.set(table[key], data[key]);
       });
-      if (filters.length > 1) {
-        q = q.where(lovefield__WEBPACK_IMPORTED_MODULE_1___default.a.op.and(filters));
-      } else {
-        q = q.where(filters[0]);
-      }
+      q = q.where(table.id.eq(data.id));
+      return q.exec();
     }
-    return q.exec().then(function(results) {
-      if (model instanceof Backbone.Collection) {
-        return model.set(results);
-      } else {
-        // FIXME throw error if more
-        // than one result for model
-        return model.set(results[0]);
+  }, {
+    key: 'find',
+    value: function find(model, options) {
+      var id, idAttribute, q, table;
+      table = this._getTable();
+      idAttribute = (0, _underscore.result)(model, 'idAttribute');
+      id = (0, _underscore.result)(model, idAttribute);
+      return q = this.conn.select().from(table).where(table.id.eq(id)).exec().then(function (results) {
+        model.set(results[0]);
+        return model;
+      });
+      return q;
+    }
+  }, {
+    key: 'findAll',
+    value: function findAll(model, options) {
+      var filters, q, table;
+      table = this._getTable();
+      q = this.conn.select().from(table);
+      if (options.data) {
+        filters = [];
+        Object.keys(options.data).forEach(function (key) {
+          var clause;
+          clause = table[key].eq(options.data[key]);
+          return filters.push(clause);
+        });
+        if (filters.length > 1) {
+          q = q.where(_lovefield2.default.op.and(filters));
+        } else {
+          q = q.where(filters[0]);
+        }
       }
-    });
-  }
+      return q.exec().then(function (results) {
+        if (model instanceof Backbone.Collection) {
+          return model.set(results);
+        } else {
+          // FIXME throw error if more
+          // than one result for model
+          return model.set(results[0]);
+        }
+      });
+    }
+  }, {
+    key: 'destroy',
+    value: function destroy(model, options) {
+      var table;
+      table = this._getTable();
+      return this.conn.delete().from(table).where(table.id.eq(model.id)).exec();
+    }
+  }]);
 
-  destroy(model, options) {
-    var table;
-    table = this._getTable();
-    return this.conn.delete().from(table).where(table.id.eq(model.id)).exec();
-  }
-
-};
-
+  return LoveStore;
+}();
 
 /***/ }),
 
@@ -279,34 +317,37 @@ var LoveStore = class LoveStore {
 /*!*************************!*\
   !*** ./src/sync.coffee ***!
   \*************************/
-/*! exports provided: sync */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "sync", function() { return sync; });
-/* harmony import */ var backbone__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! backbone */ "backbone");
-/* harmony import */ var backbone__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(backbone__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var underscore__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! underscore */ "underscore");
-/* harmony import */ var underscore__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(underscore__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./utils */ "./src/utils.coffee");
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.sync = undefined;
+
+var _backbone = __webpack_require__(/*! backbone */ "backbone");
+
+var _backbone2 = _interopRequireDefault(_backbone);
+
+var _underscore = __webpack_require__(/*! underscore */ "underscore");
+
+var _utils = __webpack_require__(/*! ./utils */ "./src/utils.coffee");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /** Get the Deferred status from $ if we have jQuery, otherwise use Backbone's
  *  @returns {boolean} - Whether the request was deferred
  */
 var getDeferred;
 
-
-
-
-
-
-
-getDeferred = function() {
-  if (backbone__WEBPACK_IMPORTED_MODULE_0___default.a.$) {
-    return Object(underscore__WEBPACK_IMPORTED_MODULE_1__["result"])(backbone__WEBPACK_IMPORTED_MODULE_0___default.a.$, 'Deferred', false);
+getDeferred = function getDeferred() {
+  if (_backbone2.default.$) {
+    return (0, _underscore.result)(_backbone2.default.$, 'Deferred', false);
   }
-  return Object(underscore__WEBPACK_IMPORTED_MODULE_1__["result"])(backbone__WEBPACK_IMPORTED_MODULE_0___default.a, 'Deferred', false);
+  return (0, _underscore.result)(_backbone2.default, 'Deferred', false);
 };
 
 /** Override Backbone's `sync` method to run against localStorage
@@ -317,15 +358,17 @@ getDeferred = function() {
  *  `jQuery.ajax`
  * @returns {undefined}
  */
-var sync = function(method, model, options = {}) {
+var sync = exports.sync = function sync(method, model) {
+  var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+
   var error, errorMessage, id, idAttribute, resp, store;
-  store = Object(_utils__WEBPACK_IMPORTED_MODULE_2__["getLoveStore"])(model);
+  store = (0, _utils.getLoveStore)(model);
   resp = void 0;
   try {
     switch (method) {
       case 'read':
-        idAttribute = Object(underscore__WEBPACK_IMPORTED_MODULE_1__["result"])(model, 'idAttribute');
-        id = Object(underscore__WEBPACK_IMPORTED_MODULE_1__["result"])(model, idAttribute);
+        idAttribute = (0, _underscore.result)(model, 'idAttribute');
+        id = (0, _underscore.result)(model, idAttribute);
         resp = id ? store.find(model, options) : store.findAll(model, options); //noqa
         break;
       case 'create':
@@ -367,65 +410,62 @@ var sync = function(method, model, options = {}) {
   return resp;
 };
 
-
 /***/ }),
 
 /***/ "./src/utils.coffee":
 /*!**************************!*\
   !*** ./src/utils.coffee ***!
   \**************************/
-/*! exports provided: guid, getLoveConnection, getTableName, getWindow, getLoveStore */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
-/* WEBPACK VAR INJECTION */(function(global) {/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "guid", function() { return guid; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getLoveConnection", function() { return getLoveConnection; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getTableName", function() { return getTableName; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getWindow", function() { return getWindow; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getLoveStore", function() { return getLoveStore; });
-/* harmony import */ var underscore__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! underscore */ "underscore");
-/* harmony import */ var underscore__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(underscore__WEBPACK_IMPORTED_MODULE_0__);
+/* WEBPACK VAR INJECTION */(function(global) {
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.getLoveStore = exports.getWindow = exports.getTableName = exports.getLoveConnection = exports.guid = undefined;
+
+var _underscore = __webpack_require__(/*! underscore */ "underscore");
+
 var s4;
 
-
-
-s4 = function() {
+s4 = function s4() {
   var rand;
   rand = (1 + Math.random()) * 0x10000;
   return (rand | 0).toString(16).substring(1);
 };
 
-var guid = function() {
-  return `${s4()}${s4()}-${s4()}-${s4()}-${s4()}-${s4()}${s4()}${s4()}`;
+var guid = exports.guid = function guid() {
+  return '' + s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
 };
 
-var getLoveConnection = function(model) {
+var getLoveConnection = exports.getLoveConnection = function getLoveConnection(model) {
   var conn;
-  conn = Object(underscore__WEBPACK_IMPORTED_MODULE_0__["result"])(model, 'loveConnection');
-  return conn || Object(underscore__WEBPACK_IMPORTED_MODULE_0__["result"])(model.collection, 'loveConnection');
+  conn = (0, _underscore.result)(model, 'loveConnection');
+  return conn || (0, _underscore.result)(model.collection, 'loveConnection');
 };
 
-var getTableName = function(model) {
+var getTableName = exports.getTableName = function getTableName(model) {
   var tableName;
-  tableName = Object(underscore__WEBPACK_IMPORTED_MODULE_0__["result"])(model, 'tableName');
-  return tableName || Object(underscore__WEBPACK_IMPORTED_MODULE_0__["result"])(model.collection, 'tableName');
+  tableName = (0, _underscore.result)(model, 'tableName');
+  return tableName || (0, _underscore.result)(model.collection, 'tableName');
 };
 
-var getWindow = function() {
-  if (Object(underscore__WEBPACK_IMPORTED_MODULE_0__["isUndefined"])(window)) {
+var getWindow = exports.getWindow = function getWindow() {
+  if ((0, _underscore.isUndefined)(window)) {
     return global;
   } else {
     return window;
   }
 };
 
-var getLoveStore = function(model) {
+var getLoveStore = exports.getLoveStore = function getLoveStore(model) {
   var store;
-  store = Object(underscore__WEBPACK_IMPORTED_MODULE_0__["result"])(model, 'loveStore');
-  return store || Object(underscore__WEBPACK_IMPORTED_MODULE_0__["result"])(model.collection, 'loveStore');
+  store = (0, _underscore.result)(model, 'loveStore');
+  return store || (0, _underscore.result)(model.collection, 'loveStore');
 };
-
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../node_modules/webpack/buildin/global.js */ "./node_modules/webpack/buildin/global.js")))
 
 /***/ }),
