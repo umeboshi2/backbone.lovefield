@@ -1,6 +1,6 @@
 {
   "name": "backbone.lovefield",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "lovefield backend for backbone",
   "main": "build/backbone.lovefield.js",
   "files": [
