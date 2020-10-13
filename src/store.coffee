@@ -1,4 +1,5 @@
-import { result } from 'underscore'
+import { Collection } from 'backbone'
+import { result } from 'lodash'
 import lf from 'lovefield'
 import { guid } from './utils'
 
@@ -31,7 +32,6 @@ export class LoveStore
     .exec().then (results) ->
       model.set results[0]
       return model
-    return q
   findAll: (model, options) ->
     table = @getTable()
     q = @conn.select().from(table)
@@ -45,14 +45,14 @@ export class LoveStore
       else
         q = q.where(filters[0])
     return q.exec().then (results) ->
-      if model instanceof Backbone.Collection
+      if model instanceof Collection
         return model.set results
       else
         # FIXME throw error if more
         # than one result for model
         return model.set results[0]
   destroy: (model, options) ->
-    table = @_getTable()
+    table = @getTable()
     return @conn.delete().from(table).where(table.id.eq(model.id)).exec()
     
     

@@ -1,4 +1,4 @@
-import { isUndefined, result } from 'underscore'
+import { result } from 'lodash'
 
 s4 = ->
   rand = (1 + Math.random()) * 0x10000
@@ -15,10 +15,6 @@ export getTableName = (model) ->
   tableName = result(model, 'tableName')
   return tableName or result(model.collection, 'tableName')
   
-export getWindow = ->
-  return if isUndefined(window) then global else window
-  
-
 export getLoveStore = (model) ->
   store = result(model, 'loveStore')
   return store or result(model.collection, 'loveStore')

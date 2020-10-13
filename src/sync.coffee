@@ -1,14 +1,5 @@
-import Bb from 'backbone'
-import { isUndefined, result } from 'underscore'
+import { result } from 'lodash'
 import { getLoveStore } from './utils'
-###* Get the Deferred status from $ if we have jQuery, otherwise use Backbone's
-#  @returns {boolean} - Whether the request was deferred
-###
-getDeferred = ->
-  if Bb.$
-    return result(Bb.$, 'Deferred', false)
-  return result(Bb, 'Deferred', false)
-
 
 ###* Override Backbone's `sync` method to run against localStorage
 # @param {string} method - One of read/create/update/delete

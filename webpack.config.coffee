@@ -18,10 +18,10 @@ WebPackOutput =
   libraryTarget: 'umd'
 
 WebPackExternals =
-  underscore:
-    amd: 'underscore'
-    commonjs: 'underscore'
-    commonjs2: 'underscore'
+  lodash:
+    amd: 'lodash'
+    commonjs: 'lodash'
+    commonjs2: 'lodash'
     root: '_'
   backbone:
     amd: 'backbone'
