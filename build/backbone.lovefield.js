@@ -1,13 +1,13 @@
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
-		module.exports = factory(require("backbone"), require("lovefield"), require("underscore"));
+		module.exports = factory(require("backbone"), require("lodash"), require("lovefield"));
 	else if(typeof define === 'function' && define.amd)
-		define(["backbone", "lovefield", "underscore"], factory);
+		define(["backbone", "lodash", "lovefield"], factory);
 	else if(typeof exports === 'object')
-		exports["Backbone.LoveField"] = factory(require("backbone"), require("lovefield"), require("underscore"));
+		exports["Backbone.LoveField"] = factory(require("backbone"), require("lodash"), require("lovefield"));
 	else
-		root["Backbone.LoveField"] = factory(root["Backbone"], root["lf"], root["_"]);
-})(window, function(__WEBPACK_EXTERNAL_MODULE_backbone__, __WEBPACK_EXTERNAL_MODULE_lovefield__, __WEBPACK_EXTERNAL_MODULE_underscore__) {
+		root["Backbone.LoveField"] = factory(root["Backbone"], root["_"], root["lf"]);
+})(window, function(__WEBPACK_EXTERNAL_MODULE_backbone__, __WEBPACK_EXTERNAL_MODULE_lodash__, __WEBPACK_EXTERNAL_MODULE_lovefield__) {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -96,37 +96,6 @@ return /******/ (function(modules) { // webpackBootstrap
 /************************************************************************/
 /******/ ({
 
-/***/ "./node_modules/webpack/buildin/global.js":
-/*!***********************************!*\
-  !*** (webpack)/buildin/global.js ***!
-  \***********************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-var g;
-
-// This works in non-strict mode
-g = (function() {
-	return this;
-})();
-
-try {
-	// This works if eval is allowed (see CSP)
-	g = g || new Function("return this")();
-} catch (e) {
-	// This works if the window reference is available
-	if (typeof window === "object") g = window;
-}
-
-// g can still be undefined, but nothing to do about it...
-// We return undefined, instead of nothing here, so it's
-// easier to handle this case. if(!global) { ...}
-
-module.exports = g;
-
-
-/***/ }),
-
 /***/ "./src/driver.coffee":
 /*!***************************!*\
   !*** ./src/driver.coffee ***!
@@ -203,7 +172,9 @@ exports.LoveStore = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _underscore = __webpack_require__(/*! underscore */ "underscore");
+var _backbone = __webpack_require__(/*! backbone */ "backbone");
+
+var _lodash = __webpack_require__(/*! lodash */ "lodash");
 
 var _lovefield = __webpack_require__(/*! lovefield */ "lovefield");
 
@@ -227,15 +198,15 @@ var LoveStore = exports.LoveStore = function () {
   }
 
   _createClass(LoveStore, [{
-    key: '_getTable',
-    value: function _getTable() {
+    key: 'getTable',
+    value: function getTable() {
       return this.conn.getSchema().table(this.name);
     }
   }, {
     key: 'create',
     value: function create(model) {
       var data, row, table;
-      table = this._getTable();
+      table = this.getTable();
       if (!model.id && model.id !== 0) {
         model.id = (0, _utils.guid)();
         model.set(model.idAttribute, model.id);
@@ -248,7 +219,7 @@ var LoveStore = exports.LoveStore = function () {
     key: 'update',
     value: function update(model) {
       var data, q, table;
-      table = this._getTable();
+      table = this.getTable();
       data = model.toJSON();
       q = this.conn.update(table);
       Object.keys(data).forEach(function (key) {
@@ -261,20 +232,19 @@ var LoveStore = exports.LoveStore = function () {
     key: 'find',
     value: function find(model, options) {
       var id, idAttribute, q, table;
-      table = this._getTable();
-      idAttribute = (0, _underscore.result)(model, 'idAttribute');
-      id = (0, _underscore.result)(model, idAttribute);
+      table = this.getTable();
+      idAttribute = (0, _lodash.result)(model, 'idAttribute');
+      id = (0, _lodash.result)(model, idAttribute);
       return q = this.conn.select().from(table).where(table.id.eq(id)).exec().then(function (results) {
         model.set(results[0]);
         return model;
       });
-      return q;
     }
   }, {
     key: 'findAll',
     value: function findAll(model, options) {
       var filters, q, table;
-      table = this._getTable();
+      table = this.getTable();
       q = this.conn.select().from(table);
       if (options.data) {
         filters = [];
@@ -290,7 +260,7 @@ var LoveStore = exports.LoveStore = function () {
         }
       }
       return q.exec().then(function (results) {
-        if (model instanceof Backbone.Collection) {
+        if (model instanceof _backbone.Collection) {
           return model.set(results);
         } else {
           // FIXME throw error if more
@@ -303,7 +273,7 @@ var LoveStore = exports.LoveStore = function () {
     key: 'destroy',
     value: function destroy(model, options) {
       var table;
-      table = this._getTable();
+      table = this.getTable();
       return this.conn.delete().from(table).where(table.id.eq(model.id)).exec();
     }
   }]);
@@ -328,27 +298,9 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.sync = undefined;
 
-var _backbone = __webpack_require__(/*! backbone */ "backbone");
-
-var _backbone2 = _interopRequireDefault(_backbone);
-
-var _underscore = __webpack_require__(/*! underscore */ "underscore");
+var _lodash = __webpack_require__(/*! lodash */ "lodash");
 
 var _utils = __webpack_require__(/*! ./utils */ "./src/utils.coffee");
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-/** Get the Deferred status from $ if we have jQuery, otherwise use Backbone's
- *  @returns {boolean} - Whether the request was deferred
- */
-var getDeferred;
-
-getDeferred = function getDeferred() {
-  if (_backbone2.default.$) {
-    return (0, _underscore.result)(_backbone2.default.$, 'Deferred', false);
-  }
-  return (0, _underscore.result)(_backbone2.default, 'Deferred', false);
-};
 
 /** Override Backbone's `sync` method to run against localStorage
  * @param {string} method - One of read/create/update/delete
@@ -367,8 +319,8 @@ var sync = exports.sync = function sync(method, model) {
   try {
     switch (method) {
       case 'read':
-        idAttribute = (0, _underscore.result)(model, 'idAttribute');
-        id = (0, _underscore.result)(model, idAttribute);
+        idAttribute = (0, _lodash.result)(model, 'idAttribute');
+        id = (0, _lodash.result)(model, idAttribute);
         resp = id ? store.find(model, options) : store.findAll(model, options); //noqa
         break;
       case 'create':
@@ -420,14 +372,14 @@ var sync = exports.sync = function sync(method, model) {
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* WEBPACK VAR INJECTION */(function(global) {
+
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.getLoveStore = exports.getWindow = exports.getTableName = exports.getLoveConnection = exports.guid = undefined;
+exports.getLoveStore = exports.getTableName = exports.getLoveConnection = exports.guid = undefined;
 
-var _underscore = __webpack_require__(/*! underscore */ "underscore");
+var _lodash = __webpack_require__(/*! lodash */ "lodash");
 
 var s4;
 
@@ -443,30 +395,21 @@ var guid = exports.guid = function guid() {
 
 var getLoveConnection = exports.getLoveConnection = function getLoveConnection(model) {
   var conn;
-  conn = (0, _underscore.result)(model, 'loveConnection');
-  return conn || (0, _underscore.result)(model.collection, 'loveConnection');
+  conn = (0, _lodash.result)(model, 'loveConnection');
+  return conn || (0, _lodash.result)(model.collection, 'loveConnection');
 };
 
 var getTableName = exports.getTableName = function getTableName(model) {
   var tableName;
-  tableName = (0, _underscore.result)(model, 'tableName');
-  return tableName || (0, _underscore.result)(model.collection, 'tableName');
-};
-
-var getWindow = exports.getWindow = function getWindow() {
-  if ((0, _underscore.isUndefined)(window)) {
-    return global;
-  } else {
-    return window;
-  }
+  tableName = (0, _lodash.result)(model, 'tableName');
+  return tableName || (0, _lodash.result)(model.collection, 'tableName');
 };
 
 var getLoveStore = exports.getLoveStore = function getLoveStore(model) {
   var store;
-  store = (0, _underscore.result)(model, 'loveStore');
-  return store || (0, _underscore.result)(model.collection, 'loveStore');
+  store = (0, _lodash.result)(model, 'loveStore');
+  return store || (0, _lodash.result)(model.collection, 'loveStore');
 };
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../node_modules/webpack/buildin/global.js */ "./node_modules/webpack/buildin/global.js")))
 
 /***/ }),
 
@@ -493,6 +436,17 @@ module.exports = __WEBPACK_EXTERNAL_MODULE_backbone__;
 
 /***/ }),
 
+/***/ "lodash":
+/*!*************************************************************************************!*\
+  !*** external {"amd":"lodash","commonjs":"lodash","commonjs2":"lodash","root":"_"} ***!
+  \*************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = __WEBPACK_EXTERNAL_MODULE_lodash__;
+
+/***/ }),
+
 /***/ "lovefield":
 /*!***********************************************************************************************!*\
   !*** external {"amd":"lovefield","commonjs":"lovefield","commonjs2":"lovefield","root":"lf"} ***!
@@ -501,17 +455,6 @@ module.exports = __WEBPACK_EXTERNAL_MODULE_backbone__;
 /***/ (function(module, exports) {
 
 module.exports = __WEBPACK_EXTERNAL_MODULE_lovefield__;
-
-/***/ }),
-
-/***/ "underscore":
-/*!*************************************************************************************************!*\
-  !*** external {"amd":"underscore","commonjs":"underscore","commonjs2":"underscore","root":"_"} ***!
-  \*************************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = __WEBPACK_EXTERNAL_MODULE_underscore__;
 
 /***/ })
 
