@@ -1,6 +1,6 @@
 {
   "name": "backbone.lovefield",
-  "version": "0.1.9",
+  "version": "0.1.10",
   "description": "lovefield backend for backbone",
   "module": "src/driver.coffee",
   "main": "build/backbone.lovefield.js",
